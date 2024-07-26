@@ -1,0 +1,15 @@
+{
+  "name": "notes-api",
+  "version": "1.0.0",
+  "description": "REST API for creating and updating notes",
+  "main": "src/app.js",
+  "scripts": {
+    "start": "node src/app.js",
+    "dev": "nodemon src/app.js"
+  },
+  "author": "Ben Bailey",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}
