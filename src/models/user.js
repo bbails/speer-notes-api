@@ -1,6 +1,9 @@
-import { Schema, models } from "mongoose";  
-import { compare,hash } from "bcryptjs";
-import { sign } from "jsonwebtoken/promises";
+import mongoose from "mongoose"; 
+const { Schema, model } = mongoose; 
+import bcrypt from "bcryptjs";
+const { compare, hash } = bcrypt;
+import * as jwt from "jsonwebtoken";
+
 
 const UserSchema = new Schema({
     email: {
@@ -29,8 +32,8 @@ UserSchema.methods.GenerateJWT = async function() {
         email: this.email,
         id: this._id
     }
-    return await sign(id, SECRET, {expiresIn: "1d"});
+    return await jwt.sign(id, SECRET, {expiresIn: "1d"});
 }
 
-const User = model('user', UserSchema);
+const User = model("user", UserSchema);
 export default User;
