@@ -1,7 +1,7 @@
 import { User } from '../models/index.js';
 import { Router } from 'express';
 import { validationResult } from 'express-validator';
-import { RegisterValidations } from '../validators/index.js';
+import { LoginValidations, RegisterValidations } from '../validators/index.js';
 
 const authRouter = Router();
 
@@ -18,5 +18,16 @@ authRouter.post('/signup', RegisterValidations, async (req, res) => {
     })
 });
 
-
+/**
+ * @description Login User
+ * @method POST
+ * @path /api/auth/login
+ * @body {email, password}
+ */
+authRouter.post('/login', LoginValidations, async (req, res) => {
+    let errors = validationResult(req);
+    return res.json({
+        errors: errors.array(),
+    })
+});
 export default authRouter

@@ -6,17 +6,29 @@
   "type": "module",
   "scripts": {
     "start": "node src/index.js",
-    "dev": "nodemon src/index.js"
+    "dev": "nodemon src/index.js",
+    "test": "jest"
   },
   "author": "Ben Bailey",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
+    "bcrypt": "^5.1.1",
+    "body-parser": "^1.20.2",
     "consola": "^3.2.3",
     "cors": "^2.8.5",
+    "cross-env": "^7.0.3",
     "dotenv": "^16.4.5",
     "esm": "^3.2.25",
     "express": "^4.19.2",
     "express-validator": "^7.1.0",
-    "jsonwebtoken": "^9.0.2"
+    "jsonwebtoken": "^9.0.2",
+    "lodash": "^4.17.21",
+    "mongoose": "^8.5.1",
+    "passport": "^0.7.0",
+    "passport-jwt": "^4.0.1",
+    "supertest": "^7.0.0"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0"
   }
 }
