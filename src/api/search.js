@@ -1,14 +1,16 @@
 import Router from 'express';
 import { Note } from '../models/index.js';
+import { userAuth } from '../middlewares/auth-guard.js';
 
 const searchRouter = Router();
 
 /**
  * @description Search Notes by content
+ * @access Private
  * @method GET
  * @path /api/search?q=:query:
  */
-searchRouter.get('/', async (req, res) => {
+searchRouter.get('/', userAuth, async (req, res) => {
     const { query } = req.query;
     const notes = await Note.find({ content: new RegExp(query, 'i') });
     if (!notes) 

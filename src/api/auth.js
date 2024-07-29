@@ -7,6 +7,7 @@ const authRouter = Router();
 
 /**
  * @description Register User
+ * @access Public
  * @method POST
  * @path /api/auth/signup
  * @body {email, password}
@@ -41,6 +42,7 @@ authRouter.post('/signup',
 
 /**
  * @description Login User
+ * @access Public
  * @method POST
  * @path /api/auth/login
  * @body {email, password}
@@ -55,13 +57,13 @@ authRouter.post(
             if (!user) {
                 return res.status(404).json({
                     success: false,
-                    msg: 'User does not exist with that email'
+                    message: 'User does not exist with that email'
                 })
             }
-            if (await user.comparePassword(req.body.password)) {
+            if (!await user.comparePassword(req.body.password)) {
                 return res.status(400).json({
                     success: false,
-                    msg: 'Password is incorrect'
+                    message: 'Password is incorrect'
                 })
             }
             let token = await user.GenerateJWT();
