@@ -1,6 +1,6 @@
 import request from 'supertest';
 import app from '../src/index'; 
-
+c
 describe('Auth API Endpoints', () => {
     it('should create a new user', async () => {
         const res = await request(app)

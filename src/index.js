@@ -1,16 +1,16 @@
-const express = require('express');
-const mongoose = require('mongoose');
-const cors = require('cors');
-const consola =require('consola');
-const passport = require('passport');
+import express from 'express';
+import mongoose from 'mongoose';
+import cors from 'cors';
+import consola from 'consola';
+import passport from 'passport';
 
 // Import Constants
 import { DB, PORT } from "./constants/index.js";
 
 // Import Routes
-import authRouter from './__test/api/auth.js';
-import noteRouter from './__test/api/notes.js';
-import searchRouter from './__test/api/search.js';
+import authRouter from './api/auth.js';
+import noteRouter from './api/notes.js';
+import searchRouter from './api/search.js';
 
 // Import Passport Middleware
 import './middlewares/passport-middware.js';
