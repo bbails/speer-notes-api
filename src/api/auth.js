@@ -2,6 +2,7 @@ import { User } from '../models/index.js';
 import { Router } from 'express';
 import Validator from '../middlewares/validation-middleware.js';
 import { LoginValidations, RegisterValidations } from '../validators/index.js';
+import authController from '../controllers/auth.js';
 
 const authRouter = Router();
 
@@ -12,33 +13,7 @@ const authRouter = Router();
  * @path /api/auth/signup
  * @body {email, password}
  */
-authRouter.post('/signup', 
-    RegisterValidations, 
-    Validator,
-    async (req, res) => {
-        try {
-            let email = req.body.email;
-            let user = await User.findOne({ email });
-            if (user) {
-                return res.status(400).json({
-                            success: false,
-                            msg: 'User already exists with that email'
-                        })
-                }
-            user = new User({...req.body});
-            await user.save();
-
-            return res.status(200).json({
-                success: true,
-                message: 'User created successfully'
-            });
-
-        }
-        catch(err) {
-            console.log(err);
-        }
-    }
-);
+authRouter.post('/signup', RegisterValidations, Validator, authController.authRegister);
 
 /**
  * @description Login User

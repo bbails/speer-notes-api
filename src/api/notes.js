@@ -103,7 +103,7 @@ noteRouter.put('/:id', userAuth, noteValidations, validator, async (req, res) =>
         return res.status(200).json({
             success: true, 
             message: 'Note updated successfully', 
-            note: note
+            note: note.getNoteContent()
         });
     }
     catch(err) {
@@ -135,7 +135,7 @@ noteRouter.delete('/:id', userAuth, async (req, res) => {
     return res.status(200).json({
         success: true,
         message: 'Note deleted successfully',
-        note: note
+        note: getNoteContent()
     });
 });
 

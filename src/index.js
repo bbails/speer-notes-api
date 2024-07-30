@@ -15,7 +15,7 @@ import searchRouter from './api/search.js';
 // Import Passport Middleware
 import './middlewares/passport-middware.js';
 
-const app = express ();
+export const app = express ();
 
 // Apply Application Middleware
 app.use(express.json());
