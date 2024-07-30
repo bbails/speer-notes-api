@@ -1,4 +1,5 @@
 import { Schema, model } from "mongoose"; 
+import Paginator from 'mongoose-paginate-v2'
 import pkg from 'lodash';
 const { lodash } = pkg;
 
@@ -17,9 +18,8 @@ const NoteSchema = new Schema({
     }
 }, { timestamps: true });
 
-/**NoteSchema.methods.getNoteInfo() = function() {
-    return lodash.pick(this, ['_id', 'content']);
-};
-*/
+
+NoteSchema.plugin(Paginator);
+
 const Note = model("notes", NoteSchema);
 export default Note;

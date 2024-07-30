@@ -30,7 +30,7 @@ authRouter.post('/signup',
 
             return res.status(200).json({
                 success: true,
-                msg: 'User created successfully'
+                message: 'User created successfully'
             });
 
         }

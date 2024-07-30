@@ -12,9 +12,9 @@ const searchRouter = Router();
  */
 searchRouter.get('/', userAuth, async (req, res) => {
     const { query } = req.query;
-    const notes = await Note.find({ content: new RegExp(query, 'i') });
+    const notes = await Note.find({ user: req.user.id, content: new RegExp(query, 'i') });
     if (!notes) 
-        return res.sendStatus(404).json(
+        return res.status(404).json(
             { 
                 message: 'Sorry, no notes found, remember to search by content and I can only search your notes!' 
             });
