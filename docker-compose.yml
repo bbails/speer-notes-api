@@ -4,22 +4,21 @@ services:
     restart: always
     environment:
       - NODE_ENV=Production
-    build:
-      context: ./
+    build: ./
 
   caddy:
     image: caddy/caddy:2.2.1-alpine
-    container_name: caddy_service
-    restart: always
+    container_name: caddy-service
+    restart: unless-stopped
     ports:
       - "80:80"
       - "443:443"
     volumes:
-      - $PWD/Caddyfile:/etc/caddy/Caddyfile
-      - $PWD/site:/srv
-      - caddy_data:/data
-      - caddy_config:/config
+    - $PWD/Caddyfile:/etc/caddy/Caddyfile
+    - $PWD/site:/srv
+    - caddy_data:/data
+    - caddy_config:/config
 
 volumes:
   caddy_data:
-  coddy_config:
+  caddy_config:
