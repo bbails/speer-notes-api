@@ -40,8 +40,15 @@ noteRouter.post('/', userAuth, noteValidations, validator, async (req, res) => {
  * @method GET
  * @path /api/notes
  */
-noteRouter.get('/', userAuth,async (req, res) => {
-    const notes = await Note.find();
+noteRouter.get('/', userAuth, async (req, res) => {
+    let notes = await Note.find().or([{user: req.user.id}, {sharedWith: req.user.id}]);
+    if (!notes) {
+        return res.status(404).json({
+            success: false,
+            message: 'No notes found'
+        });
+    }
+
     return res.json(notes);
 });
 
@@ -52,8 +59,14 @@ noteRouter.get('/', userAuth,async (req, res) => {
  * @path /api/notes/:id
  */
 noteRouter.get('/:id', userAuth, async (req, res) => {
-    const { id } = req.params;
-    const note = await Note.findById(id);
+    let id  = req.params.id;
+    let note = await Note.findById(id);
+    if (!note || (note.user != req.user.id && !note.sharedWith.includes(req.user.id))) {
+        return res.status(404).json({
+            success: false,
+            message: 'Note not found'
+        }); 
+    }
     return res.json(note);
 });
 
@@ -84,7 +97,7 @@ noteRouter.put('/:id', userAuth, noteValidations, validator, async (req, res) =>
         }
         note = await Note.findOneAndUpdate(
             {_id: id}, 
-            {content: content, user: note.user, sharedWith: note.sharedWith}
+            {content: content}
         );
 
         return res.status(200).json({
