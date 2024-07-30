@@ -1,6 +1,6 @@
 import Router from 'express';
-import { Note } from '../models/index.js';
 import { userAuth } from '../middlewares/auth-guard.js';
+import noteController from '../controllers/note.js';
 
 const searchRouter = Router();
 
@@ -10,16 +10,6 @@ const searchRouter = Router();
  * @method GET
  * @path /api/search?q=:query:
  */
-searchRouter.get('/', userAuth, async (req, res) => {
-    const { query } = req.query;
-    const notes = await Note.find({ user: req.user.id, content: new RegExp(query, 'i') });
-    if (!notes) 
-        return res.status(404).json(
-            { 
-                message: 'Sorry, no notes found, remember to search by content and I can only search your notes!' 
-            });
-
-    return res.json(notes);
-});
+searchRouter.get('/', userAuth, noteController.searchForNoteByContent);
 
 export default searchRouter
