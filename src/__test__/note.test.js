@@ -1,4 +1,4 @@
-import supertest  from 'supertest';
+import supertest from 'supertest';
 import { app } from '../index.js';
 
 describe('Note', () => {
