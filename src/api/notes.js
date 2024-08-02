@@ -13,7 +13,7 @@ const noteRouter = Router();
  * @path /api/notes
  * @body {content}
  */
-noteRouter.post('/', userAuth, noteValidations, validator, noteController.createNote);
+noteRouter.post('/', userAuth, noteValidations, validator, noteController.createNoteHandler);
 
 /**
  * @description Get All Notes from User
@@ -21,7 +21,7 @@ noteRouter.post('/', userAuth, noteValidations, validator, noteController.create
  * @method GET
  * @path /api/notes
  */
-noteRouter.get('/', userAuth, noteController.getAllNotesForUser);
+noteRouter.get('/', userAuth, noteController.getNotesHandler);
 
 /**
  * @description Get Note by ID for Authenticated User
@@ -29,7 +29,7 @@ noteRouter.get('/', userAuth, noteController.getAllNotesForUser);
  * @method GET
  * @path /api/notes/:id
  */
-noteRouter.get('/:id', userAuth, noteController.getNoteById);
+noteRouter.get('/:id', userAuth, noteController.getNoteByIdHandler);
 
 /**
  * @description Update Note by Id for Authenticated User
@@ -38,7 +38,7 @@ noteRouter.get('/:id', userAuth, noteController.getNoteById);
  * @path /api/notes/:id
  * @body {content}
  */
-noteRouter.put('/:id', userAuth, noteValidations, validator, noteController.UpdateNote);
+noteRouter.put('/:id', userAuth, noteValidations, validator, noteController.updateNoteHandler);
 
 /**
  * @description Delete Note by Id for Authenticated User
@@ -46,7 +46,7 @@ noteRouter.put('/:id', userAuth, noteValidations, validator, noteController.Upda
  * @method DELETE
  * @path /api/notes/:id
  */
-noteRouter.delete('/:id', userAuth, noteController.deleteNote);
+noteRouter.delete('/:id', userAuth, noteController.deleteNoteHandler);
 
 /**
  * @description Share Note with Other User for Authenticated User
@@ -55,6 +55,6 @@ noteRouter.delete('/:id', userAuth, noteController.deleteNote);
  * @path /api/notes/:id/share
  * @body {email}
  */
-noteRouter.post('/:id/share', userAuth, noteController.shareNote);
+noteRouter.post('/:id/share', userAuth, noteController.shareNoteHandler);
 
 export default noteRouter

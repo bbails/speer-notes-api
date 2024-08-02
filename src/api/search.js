@@ -10,6 +10,6 @@ const searchRouter = Router();
  * @method GET
  * @path /api/search?q=:query:
  */
-searchRouter.get('/', userAuth, noteController.searchForNoteByContent);
+searchRouter.get('/', userAuth, noteController.searchNoteHandler);
 
 export default searchRouter

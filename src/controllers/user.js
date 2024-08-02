@@ -1,16 +1,18 @@
 import { User } from '../models/index.js';
+import { createUser, findUserByEmail } from '../services/user.js';
+import { GenerateJWT } from '../utils/jwt.utils.js';
 
-export async function authRegister (req, res){
+export async function registerUser (req, res){
     let email = req.body.email;
-    let user = await User.findOne({ email });
+    let password = req.body.password;
+    let user = await findUserByEmail(email);
     if (user) {
         return res.status(400).json({
                     success: false,
                     msg: 'User already exists with that email'
                 })
         }
-    user = new User({...req.body});
-    await user.save();
+    user = createUser(email, password);
 
     return res.status(200).json({
         success: true,
@@ -18,8 +20,10 @@ export async function authRegister (req, res){
     });
 }
 
-export async function authLogin(req, res) {
-    let user = await User.findOne({ email: req.body.email });
+export async function loginUser(req, res) {
+    console.log('HERE WE ARE');
+    let user = await findUserByEmail(req.body.email);
+    console.log('GOT USER', user);
     if (!user) {
         return res.status(404).json({
             success: false,
@@ -32,7 +36,7 @@ export async function authLogin(req, res) {
             message: 'Password is incorrect'
         })
     }
-    let token = await user.GenerateJWT();
+    let token = await GenerateJWT({user});
     return res.status(200).json({
         success: true,
         token: token,
@@ -40,4 +44,4 @@ export async function authLogin(req, res) {
     })
 }
 
-export default { authRegister, authLogin } 
+export default { registerUser, loginUser } 

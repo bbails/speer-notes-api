@@ -1,11 +1,20 @@
 import { Note, User } from '../models/index.js';
+import { createNote, findNotesForUser, findNoteById, updateNote, deleteNote, shareNote, findNotesByQuery } from '../services/note.js';
 
-export async function createNote(req, res) {
+export async function createNoteHandler(req, res) {
     // Create new Note
     let content = req.body.content;
     let user = await User.findById(req.user.id);
-    let note = new Note({content: content, user: user._id});
-    await note.save();
+
+    try {
+        let note = await createNote(content, user);
+    } catch (err) {
+        return res.status(500).json({
+            success: false,
+            message: 'Internal server error'
+        });
+    }
+    
     return res.status(200).json({
         success: true,
         message: 'Note created successfully',
@@ -13,8 +22,8 @@ export async function createNote(req, res) {
     });
 }
 
-export async function getAllNotesForUser(req, res){
-    let notes = await Note.find().or([{user: req.user.id}, {sharedWith: req.user.id}]);
+export async function getNotesHandler(req, res){
+    let notes = await getAllNotesForUser(req.user.id);
     if (!notes) {
         return res.status(404).json({
             success: false,
@@ -25,9 +34,9 @@ export async function getAllNotesForUser(req, res){
     return res.status(200).json(notes);
 }
 
-export async function getNoteById (req, res) {
+export async function getNoteByIdHandler (req, res) {
     let id  = req.params.id;
-    let note = await Note.findById(id);
+    let note = await findNoteById(id);
     if (!note || (note.user != req.user.id && !note.sharedWith.includes(req.user.id))) {
         return res.status(404).json({
             success: false,
@@ -37,11 +46,11 @@ export async function getNoteById (req, res) {
     return res.json(note);
 }
 
-export async function UpdateNote (req, res) {
+export async function updateNoteHandler (req, res) {
     let id = req.params.id;
     let content = req.body.content;
 
-    let note = await Note.findById(id);
+    let note = await findNoteById(id);
     if (!note) {
         return res.status(404).json({
             success: false,
@@ -54,10 +63,7 @@ export async function UpdateNote (req, res) {
             message: 'Cannot update note that is not yours'
         })
     }
-    note = await Note.findOneAndUpdate(
-        {_id: id}, 
-        {content: content}
-    );
+    note = updateNote(id, content);
 
     return res.status(200).json({
         success: true, 
@@ -66,9 +72,9 @@ export async function UpdateNote (req, res) {
     });
 }
 
-export async function deleteNote (req, res) {
+export async function deleteNoteHandler (req, res) {
     const { id } = req.params;
-    const note = await Note.findByIdAndDelete(id);
+    const note = deleteNote(id)
     if (!note){
         return res.status(404).json({
             success: false,
@@ -83,7 +89,7 @@ export async function deleteNote (req, res) {
     });
 }
 
-export async function shareNote (req, res) {
+export async function shareNoteHandler (req, res) {
     let id = req.params.id;
     let email = req.body.email;
 
@@ -109,19 +115,16 @@ export async function shareNote (req, res) {
         })
     }   
 
-    note = await Note.findOneAndUpdate(
-        {_id: id}, 
-        {sharedWith: [...note.sharedWith, user._id]}
-    );
+    note = shareNote(id, user._id)
     return res.status(200).json({
         success: true, 
         message: 'Note shared successfully'
     });
 }
 
-export async function searchForNoteByContent (req, res) {
+export async function searchNoteHandler (req, res) {
     let query  = req.query.content;
-    let notes = await Note.find({user: req.user.id, content : new RegExp(query, 'i')});
+    let notes = await findNotesByQuery({user: req.user.id, content : new RegExp(query, 'i')});
     if (notes.length == 0) 
         return res.status(404).json(
         { 
@@ -130,4 +133,4 @@ export async function searchForNoteByContent (req, res) {
     return res.json(notes);
 }
 
-export default { createNote, getAllNotesForUser, getNoteById, UpdateNote, deleteNote, shareNote, searchForNoteByContent } 
+export default { createNoteHandler, getNotesHandler, getNoteByIdHandler, updateNoteHandler, deleteNoteHandler, shareNoteHandler, searchNoteHandler } 
