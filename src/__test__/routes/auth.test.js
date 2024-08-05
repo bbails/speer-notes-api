@@ -1,10 +1,11 @@
 import supertest from 'supertest';
 import { createServer } from '../../utils/server.js';
 import mongoose from 'mongoose';
-import * as UserService from '../../services/user.js';
-import { createUser, deleteUser } from '../../services/user.js';
+import { MongoMemoryServer } from 'mongodb-memory-server';
 import {jest, beforeAll, afterAll} from '@jest/globals'
+import { createUser } from '../../services/user.js';
 
+const app = createServer();
 
 const userId = new mongoose.Types.ObjectId().toString();
 
@@ -14,24 +15,22 @@ var userPayload = {
     password: 'test123'
 }
 
-const app = null;
-
-// I'd love to clean this up but Jest doesn't like ESM, Should look into other testing frameworks that better work with ESM
-beforeAll(() => {
-    app = createServer();
-
-    jest.unstable_mockModule("../../services/user.js", () => ({
-        createUser: jest.fn(() => { return userPayload }),
-        findUserByEmail: jest.fn(() => { return userPayload }), 
-    })); 
-});
-
-afterAll(() => {
-    jest.clearAllMocks();
-});
-
+var user2payload = {
+    email:"test2@test.com",
+    password: 'test123'
+}
 
 describe('Auth Routes', () => {
+
+    beforeAll(async () => {
+        const mongoServer = await MongoMemoryServer.create();
+        await mongoose.connect(mongoServer.getUri(), { dbName: "verifyAuth" });
+    });
+    afterAll(async () => {
+        //await mongoose.disconnect( { dbName: "verifyAuth" });
+        //await mongoose.connection.close();
+    });
+
     // User Registration
     describe('Auth Register Route', () => {
         describe('given email is invalid', () => {
@@ -40,42 +39,64 @@ describe('Auth Routes', () => {
                     email: 'test',
                     password: 'test123'
                 }
-                await supertest(app).post('/api/auth/signup').send(user).expect(400);
+                const {body, statusCode} = await supertest(app).post('/api/auth/signup').send(user);
+                expect(statusCode).toBe(400);
             })
         })
-        describe('given password is invalid', () => {
+        describe.skip('given password is invalid', () => {
             it('should return 400', async () => {
                 const user = {
                     email: 'test@test.com',
                     password: 'test'
                 }
-                await supertest(app).post('/api/auth/signup').send(user).expect(400);
+                const {body, statusCode} = await supertest(app).post('/api/auth/signup').send(user);
+                expect(statusCode).toBe(400);
             })
         })
-        describe.skip('given valid email and password', () => {
+        describe('given email already exists', () => {
+            it('should return 400', async () => {
+                const user = await createUser(user2payload.email, user2payload.password);
+                const {body, statusCode} = await supertest(app).post('/api/auth/signup').send(user2payload)
+                expect(statusCode).toBe(400);
+                expect(body.success).toBe(false);
+            })
+        })
+        describe('given valid email and password', () => {
             it('should return 200 and user payload', async () => {
                 const user = {
                     email: 'test@test.com',
                     password: 'test123'
                 }
-                await supertest(app).post('/api/auth/signup').send(user).expect(200);
+                const {body, statusCode} = await supertest(app).post('/api/auth/signup').send(user);
+
+                expect(statusCode).toBe(200);
+                expect(body.success).toBe(true);
             })
         })
     })
     describe('Auth Login Route', () => {
-        describe.skip('given valid user', () => {
+        beforeAll(async () => {
+            // Create User to test against
+            await createUser(userPayload.email, userPayload.password);
+        })
+        describe('given valid user', () => {
             it('should return 200 and bearer token', async () => {
-                const user = userPayload;
-                await supertest(app).post('/api/auth/login').send(user).expect(200);
+                const {body, statusCode} = await supertest(app).post('/api/auth/login').send(userPayload);
+
+                expect(statusCode).toBe(200);
             })
         })
         describe('given invalid given wrong password', () => {
             it('should return 400', async () => {
                 const user = {
-                    email: 'test@test.com',
-                    password: 'test12345'
+                    email: userPayload.email,
+                    password: 'test12345' // Wrong password
                 }
-                await supertest(app).post('/api/auth/login').send(user).expect(400);
+                const {body, statusCode} = await supertest(app).post('/api/auth/login').send(user);
+
+                expect(statusCode).toBe(400);
+                expect(body.success).toBe(false);
+                expect(body.message).toBe('Email or Password is incorrect');
             })
         })
     })

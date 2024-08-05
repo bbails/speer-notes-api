@@ -23,7 +23,8 @@ export async function createNoteHandler(req, res) {
 }
 
 export async function getNotesHandler(req, res){
-    let notes = await getAllNotesForUser(req.user.id);
+    //console.log('GETTING ALL NOTES');
+    let notes = await findNotesForUser(req.user.id);
     if (!notes) {
         return res.status(404).json({
             success: false,
@@ -35,6 +36,7 @@ export async function getNotesHandler(req, res){
 }
 
 export async function getNoteByIdHandler (req, res) {
+    console.log("GETTING NOTE BY ID " + req.params.id);
     let id  = req.params.id;
     let note = await findNoteById(id);
     if (!note || (note.user != req.user.id && !note.sharedWith.includes(req.user.id))) {

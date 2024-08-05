@@ -21,9 +21,7 @@ export async function registerUser (req, res){
 }
 
 export async function loginUser(req, res) {
-    console.log('HERE WE ARE');
     let user = await findUserByEmail(req.body.email);
-    console.log('GOT USER', user);
     if (!user) {
         return res.status(404).json({
             success: false,
@@ -33,10 +31,14 @@ export async function loginUser(req, res) {
     if (!await user.comparePassword(req.body.password)) {
         return res.status(400).json({
             success: false,
-            message: 'Password is incorrect'
+            message: 'Email or Password is incorrect'
         })
     }
-    let token = await GenerateJWT({user});
+    let tokenPayload = {
+        email: user.email,
+        password: user.password
+    }
+    let token = await user.GenerateJWT();
     return res.status(200).json({
         success: true,
         token: token,

@@ -1,7 +1,10 @@
 import { Schema, model } from "mongoose"; 
 import bcrypt from "bcrypt";
 const { compare, hash } = bcrypt;
+import jwt from "jsonwebtoken";
+const { sign } = jwt;
 
+import { SECRET } from "../constants/index.js";
 
 
 const UserSchema = new Schema({
@@ -24,6 +27,14 @@ UserSchema.pre("save", async function(next) {
 
 UserSchema.methods.comparePassword = async function(password) {
     return await compare(password, this.password);
+}
+
+UserSchema.methods.GenerateJWT = async function() {
+    let payload = {
+        email: this.email,
+        id: this._id
+    }
+    return await sign(payload, SECRET, {expiresIn: "1d"});
 }
 
 const User = model("user", UserSchema);
