@@ -41,7 +41,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"email\":\"benbailey902@gmail.com\",\n    \"password\":\"1234567\"\n}",
+					"raw": "{\n    \"email\":{{testEmail}},\n    \"password\":{{testEmail}}\n}",
 					"options": {
 						"raw": {
 							"language": "json"
