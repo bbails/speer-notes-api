@@ -7,16 +7,13 @@ import { createUser } from '../../services/user.js';
 
 const app = createServer();
 
-const userId = new mongoose.Types.ObjectId().toString();
-
 var userPayload = {
-    _id: userId,
     email: 'test@test.com',
     password: 'test123'
 }
 
 var user2payload = {
-    email:"test2@test.com",
+    email:'test2@test.com',
     password: 'test123'
 }
 
@@ -25,10 +22,6 @@ describe('Auth Routes', () => {
     beforeAll(async () => {
         const mongoServer = await MongoMemoryServer.create();
         await mongoose.connect(mongoServer.getUri(), { dbName: "verifyAuth" });
-    });
-    afterAll(async () => {
-        //await mongoose.disconnect( { dbName: "verifyAuth" });
-        //await mongoose.connection.close();
     });
 
     // User Registration
@@ -43,7 +36,7 @@ describe('Auth Routes', () => {
                 expect(statusCode).toBe(400);
             })
         })
-        describe.skip('given password is invalid', () => {
+        describe('given password is invalid', () => {
             it('should return 400', async () => {
                 const user = {
                     email: 'test@test.com',

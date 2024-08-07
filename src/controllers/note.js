@@ -7,14 +7,14 @@ export async function createNoteHandler(req, res) {
     let user = await User.findById(req.user.id);
 
     try {
-        let note = await createNote(content, user);
+        var note = await createNote(content, user._id);
     } catch (err) {
         return res.status(500).json({
             success: false,
             message: 'Internal server error'
         });
     }
-    
+
     return res.status(200).json({
         success: true,
         message: 'Note created successfully',
@@ -23,7 +23,6 @@ export async function createNoteHandler(req, res) {
 }
 
 export async function getNotesHandler(req, res){
-    //console.log('GETTING ALL NOTES');
     let notes = await findNotesForUser(req.user.id);
     if (!notes) {
         return res.status(404).json({
@@ -36,7 +35,6 @@ export async function getNotesHandler(req, res){
 }
 
 export async function getNoteByIdHandler (req, res) {
-    console.log("GETTING NOTE BY ID " + req.params.id);
     let id  = req.params.id;
     let note = await findNoteById(id);
     if (!note || (note.user != req.user.id && !note.sharedWith.includes(req.user.id))) {
@@ -75,19 +73,27 @@ export async function updateNoteHandler (req, res) {
 }
 
 export async function deleteNoteHandler (req, res) {
-    const { id } = req.params;
-    const note = deleteNote(id)
-    if (!note){
+    const { id } = req.params;  
+
+    let note = await findNoteById(id);
+    if (!note) {
         return res.status(404).json({
             success: false,
             message: 'Note not found'
         });
     }
+    if (note.user != req.user.id) {
+        return res.status(401).json({
+            success: false,
+            message: 'Cannot delete note that is not yours'
+        })
+    }
+    const deletedNote = deleteNote(id)
 
     return res.status(200).json({
         success: true,
         message: 'Note deleted successfully',
-        note: note
+        note: deletedNote
     });
 }
 

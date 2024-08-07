@@ -1,6 +1,5 @@
 import { User } from '../models/index.js';
 import { createUser, findUserByEmail } from '../services/user.js';
-import { GenerateJWT } from '../utils/jwt.utils.js';
 
 export async function registerUser (req, res){
     let email = req.body.email;
@@ -33,10 +32,6 @@ export async function loginUser(req, res) {
             success: false,
             message: 'Email or Password is incorrect'
         })
-    }
-    let tokenPayload = {
-        email: user.email,
-        password: user.password
     }
     let token = await user.GenerateJWT();
     return res.status(200).json({

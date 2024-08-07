@@ -1,7 +1,7 @@
 import Note from "../models/note.js";
 
-export async function createNote(content, user) {
-    let note = new Note({content: content, user: user._id});
+export async function createNote(content, userId) {
+    let note = new Note({content: content, user: userId});
     return await note.save();
 }
 
@@ -31,6 +31,6 @@ export async function deleteNote(noteId) {
 export async function shareNote(noteId, userId) {
     return await Note.findOneAndUpdate(
         {_id: noteId}, 
-        {sharedWith: [...note.sharedWith, userId]}
+        { $push: { sharedWith: userId } }
     );
 }

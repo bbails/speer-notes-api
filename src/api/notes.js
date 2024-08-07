@@ -21,7 +21,7 @@ noteRouter.post('/', userAuth, noteValidations, validator, noteController.create
  * @method GET
  * @path /api/notes
  */
-noteRouter.get('/', userAuth, noteController.getNotesHandler);
+noteRouter.get('/', userAuth, validator, noteController.getNotesHandler);
 
 /**
  * @description Get Note by ID for Authenticated User
@@ -29,7 +29,7 @@ noteRouter.get('/', userAuth, noteController.getNotesHandler);
  * @method GET
  * @path /api/notes/:id
  */
-noteRouter.get('/:id', userAuth, noteController.getNoteByIdHandler);
+noteRouter.get('/:id', userAuth, validator, noteController.getNoteByIdHandler);
 
 /**
  * @description Update Note by Id for Authenticated User
@@ -46,7 +46,7 @@ noteRouter.put('/:id', userAuth, noteValidations, validator, noteController.upda
  * @method DELETE
  * @path /api/notes/:id
  */
-noteRouter.delete('/:id', userAuth, noteController.deleteNoteHandler);
+noteRouter.delete('/:id', userAuth, validator, noteController.deleteNoteHandler);
 
 /**
  * @description Share Note with Other User for Authenticated User
@@ -55,6 +55,6 @@ noteRouter.delete('/:id', userAuth, noteController.deleteNoteHandler);
  * @path /api/notes/:id/share
  * @body {email}
  */
-noteRouter.post('/:id/share', userAuth, noteController.shareNoteHandler);
+noteRouter.post('/:id/share', userAuth, validator, noteController.shareNoteHandler);
 
 export default noteRouter
