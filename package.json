@@ -15,7 +15,7 @@
   "scripts": {
     "start": "node src/index.js",
     "dev": "nodemon src/index.js",
-    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js"
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js --detectOpenHandles --forceExit"
   },
   "author": "Ben Bailey",
   "license": "MIT",
@@ -26,12 +26,10 @@
     "cors": "^2.8.5",
     "cross-env": "^7.0.3",
     "dotenv": "^16.4.5",
-    "esm": "^3.2.25",
     "express": "^4.19.2",
     "express-slow-down": "^2.0.3",
     "express-validator": "^7.1.0",
     "jsonwebtoken": "^9.0.2",
-    "lodash": "^4.17.21",
     "mongodb-memory-server": "^10.0.0",
     "mongoose": "^8.5.1",
     "passport": "^0.7.0",

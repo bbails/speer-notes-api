@@ -1,9 +1,9 @@
 # Notes API
 
-REST API for creating and updating notes.
-
-Used Express framework and MongoDB, mostly because I've used them both before and they are 
-well supported for making and testing API frameworks quickly and efficiently. 
+REST API for creating and updating notes. Using express framework with MongoDB for simplicity 
+and 3rd party support. I used passport for a very simple JWT validation that can easily be built
+up or added to. The other packages are explained breifly below
+ 
 
 ## Requirements (Before you can run this locally)
 1. MongoDB
@@ -16,9 +16,9 @@ well supported for making and testing API frameworks quickly and efficiently.
 2. Run `npm install` to install the dependencies.
 3. Create a `.env` file by running 
 ```sh
-> $ cp .env-example .env
+cp .env-example .env
 ```
- then filling in the values there
+4. then filling in the values in the new .env file
 
 ## Running the project locally
 
@@ -27,7 +27,7 @@ well supported for making and testing API frameworks quickly and efficiently.
 2. Start the server:
 npm start
 
-## Imported Node Modules
+## Imported Packages
 
 - `bcrypt`: Used for password hashing.
 - `body-parser`: Used for parsing request bodies.
@@ -35,13 +35,11 @@ npm start
 - `cors`: Used for enabling CORS.
 - `cross-env`: Used for setting environment variables.
 - `dotenv`: Used for loading environment variables from `.env` file.
-- `esm`: Used for ECMAScript modules.
 - `express`: Used for creating the server.
 - `express-slow-down`: Used for rate limiting.
 - `express-validator`: Used for request validation.
 - `jsonwebtoken`: Used for generating JWT tokens.
-- `lodash`: Used for utility functions.
-- `mongodb-memory-server`: Used for testing with an in-memory MongoDB instance.
+- `mongodb-memory-server`: Used for testing with an in-memory MongoDB instance. 
 - `mongoose`: Used for interacting with MongoDB.
 - `passport`: Used for authentication.
 - `passport-jwt`: Used for JWT authentication strategy.

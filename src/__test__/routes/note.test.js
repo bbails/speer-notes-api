@@ -1,3 +1,19 @@
+/***
+ * Test Note Functions
+ * - Create Note
+ * - Delete Note
+ * - Share Note
+ * - Update Note
+ * - Get Notes
+ * - Get Note
+ * - Search Notes
+ * 
+ * /////
+ * I'm using mongodb memory server here to create a fake db. This is really overkill and takes more time then I'd like.
+ * Jest Mocks don't work super well eith ES6 modules. I played around with it for a bit and couldn't get it to work in a way 
+ * that I liked. But given more time this should be refactored to use service Mocks, this should greatly improve the performance of the tests
+ */
+
 import supertest from 'supertest';
 import mongoose from 'mongoose';
 import { MongoMemoryServer } from 'mongodb-memory-server';
