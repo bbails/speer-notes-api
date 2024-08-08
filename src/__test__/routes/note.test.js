@@ -75,6 +75,16 @@ describe('Note', () => {
                 expect(statusCode).toBe(401);
             })
         })
+        describe('given Note does not exist', () => {
+            it('should return 404', async () => {
+                const {body, statusCode} = await supertest(app)
+                    .get('/api/notes/' + new mongoose.Types.ObjectId().toHexString())
+                    .auth(authToken, { type: 'bearer' });
+                expect(statusCode).toBe(404);
+                console.log(body);
+
+            })
+        })
         describe('given Note exists', () => {
 
             it('should return 200 and note', async () => {                          

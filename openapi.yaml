@@ -1,0 +1,252 @@
+openapi: 3.0.0
+servers:
+  - url: notes-api.benb.ca/api/
+info:
+  title: Notes-API
+  version: 1.0.0'
+components:
+  schemas:
+    AuthInput:
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+      required:
+        - email
+        - password
+    AuthResponse:
+      type: object
+      properties:
+        success:
+          type: string
+        token: 
+          type: string
+        user:
+          type: string
+    User:
+      type: object
+      properties:
+        email:
+          type: string
+    Note:
+      type: object
+      properties:
+        _id:
+          type: string
+        content:
+          type: string
+        sharedWith:
+          type: array
+          items:
+            type: string
+        user:
+          type: string
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+        __v: 
+          type: integer
+    NoteInput:
+      type: object
+      properties:
+        content:
+          type: string
+      required:
+        - content
+    NoteResponse:
+      type: object
+      properties:
+        success: 
+          type: string
+        message:
+          type: string
+        note:
+          $ref: '#/components/schemas/Note'
+    ResponseSchema:
+      type: object
+      properties:
+        success:
+          type: string
+        message:
+          type: string
+    Errors:
+      type: array
+      items:
+        type: object
+        properties:
+          type:
+            type: string
+          value:
+            type: string
+          msg:
+            type: string
+          path:
+            type: string
+          location:
+            type: string
+      
+paths:
+  /auth/signup:
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthInput'
+      responses:
+        '200':
+          description: Successfully created new User
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseSchema'
+        '400':
+          description: Error in Inputs
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Errors'
+  /auth/login:
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthInput'
+      responses:
+        '200':
+          description: Successfully Logged in
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+  /notes:
+    get:
+      summary: Get all notes for User
+      responses:
+        '200':
+          description: Retrieved Notes
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  facilities:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Note'
+    post:
+      summary: Create a new Note for User
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NoteInput'
+      responses:
+        '200':
+          description: Successfully Created Note
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NoteResponse'
+  /notes/{id}:
+    get:
+      summary: Get a Note by ID
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+        description: ID of the Note
+      responses:
+        '200':
+          description: Successfully found note
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Note'
+        '404':
+          description: No notes found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseSchema'
+    put:
+      summary: Update Content of a note
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+        description: ID of the Note
+      responses:
+        '200':
+          description: Successfully Updated Note
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NoteResponse'
+    delete:
+      summary: Delete a given Note
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+        description: ID of the Note
+      responses:
+        '200':
+          description: Successfully Deleted Note
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NoteResponse'
+  /notes/{id}/share:
+    post:
+      summary: Share Note with given User
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+        description: ID of the Note
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '200':
+          description: Successfully Shared Note
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseSchema'
+  /search:
+    get:
+      summary: Search and return Notes with given Keywords
+      parameters:
+      - in: query
+        name: content
+        schema:
+          type: string
+        description: keywords to search notes for
+      responses:
+        '200':
+          description: Get all Notes with Keywords
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  shifts:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Note'
